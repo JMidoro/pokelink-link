@@ -19,7 +19,7 @@ export default function Page() {
                     Joey Zero
                 </div>
             </Link>
-            <Link href="/players/xenogelion" className="w-full h-screen border relative group">
+            <Link href="/player/xenogelion" className="w-full h-screen border relative group">
                 <div className="absolute top-0 left-0 w-full h-full blur-sm opacity-20 saturate-50 transition group-hover:blur-none group-hover:opacity-100 group-hover:saturate-100" style={{ backgroundImage: 'url("/creators/xeno-bg.png")', backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div>
                 <div
                     className="absolute left-0 top-0 h-[80vh] min-w-24 grow transition duration-150 scale-50 group-hover:scale-125 md:w-full z-[2]"

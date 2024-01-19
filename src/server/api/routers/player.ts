@@ -39,7 +39,7 @@ export const playerRouter = createTRPCRouter({
       return {
         id: user?.id,
         name: user?.name,
-        playthrough: playersMostRecentPlaythrough,
+        playthrough: user ? playersMostRecentPlaythrough : null,
       };
     }),
 });
