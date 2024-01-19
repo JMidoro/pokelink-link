@@ -74,14 +74,36 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   const input = await req.json();
-  const party = input.update.party;
-  if (!input) throw new Error("No playthrough data provided");
+  const keyVal = req.headers.get("x-api-key");
+  if (!keyVal) throw new Error("No API key provided");
 
-  const mostRecentlyUpdatedPlaythrough = await prisma.playthrough.findFirst({
-    orderBy: {
-      updatedAt: "desc",
-    },
+  // Lookup the key in the database
+  const key = await prisma.key.findUnique({
+    where: { value: keyVal.toString() },
+    include: { account: true },
   });
+
+  if (!input[0]) throw new Error("No playthrough data provided");
+  if (!key) throw new Error("No key found");
+
+  const thisPlaythrough = {
+    pokelinkId: input[0].id,
+    gameId: input[0].trainer.game.id,
+    gameTitle: input[0].trainer.game.friendlyName,
+    generation: input[0].trainer.game.generation,
+    accountId: key.accountId,
+  };
+
+  const playthrough = await prisma.playthrough.upsert({
+    where: {
+      pokelinkId: thisPlaythrough.pokelinkId,
+      accountId: thisPlaythrough.accountId,
+    },
+    update: thisPlaythrough,
+    create: thisPlaythrough,
+  });
+
+  const party = input[0].party;
 
   const allPokemon = party.map(
     async (individualPokemon: IIndividualPokemon) => {
@@ -92,7 +114,7 @@ export async function POST(req: Request) {
           // Is there a pokemon with this slotId?
           const pokemonInSlot = await prisma.pokemon.findFirst({
             where: {
-              playthroughId: mostRecentlyUpdatedPlaythrough?.id,
+              playthroughId: playthrough?.id,
               slotId: individualPokemon.slotId
                 ? parseInt(individualPokemon.slotId)
                 : undefined,
@@ -115,7 +137,7 @@ export async function POST(req: Request) {
       if (individualPokemon.slotId) {
         const pokemonInSlot = await prisma.pokemon.findFirst({
           where: {
-            playthroughId: mostRecentlyUpdatedPlaythrough?.id,
+            playthroughId: playthrough?.id,
             slotId: individualPokemon.slotId
               ? parseInt(individualPokemon.slotId)
               : undefined,
@@ -134,9 +156,9 @@ export async function POST(req: Request) {
       const pokedex = await P.getPokemonByName(p.speciesName.toLowerCase());
       return {
         name: p.nickname,
-        playthroughId: mostRecentlyUpdatedPlaythrough?.id,
+        playthroughId: playthrough?.id,
         level: p.level,
-        pid: mostRecentlyUpdatedPlaythrough?.id + p.pid,
+        pid: playthrough?.id + p.pid,
         encounterType: p.encounterType,
         isEgg: !!p.isEgg,
         nature: p.nature,
