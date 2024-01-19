@@ -34,12 +34,12 @@ export const RulesSection = () => {
     return (
         <section className="py-8 w-full" id="rules">
             <div className="container text-white w-full flex flex-col justify-items-center content-center place-content-center align-middle">
-                <h1 className="text-4xl font-bold text-white teko uppercase m-0 w-full max-w-screen bg-black rounded-xl text-center p-4">Playthrough Rules</h1>
+                <h1 className="text-4xl font-bold text-white teko uppercase m-0 mb-4 w-full max-w-screen bg-black rounded-xl text-center p-4">Playthrough Rules</h1>
                 <div className="grid md:grid-cols-3 gap-4">
                     {rules.map((rule, index) => (
-                        <div key={index} className="w-full max-w-screen lg:basis-1/3 my-8 h-full">
+                        <div key={index} className="w-full max-w-screen lg:basis-1/3 my-4 md:h-full">
                             <div className="h-full">
-                                <Card className="border-neutral-700 bg-black shadow-lg w-full max-w-screen grow h-full flex flex-col justify-evenly p-0">
+                                <Card className="border-neutral-700 bg-black shadow-lg w-full max-w-screen grow h-full flex flex-col justify-evenly py-4 md:p-0">
                                     <CardHeader className="flex items-center justify-center py-0 w-full max-w-screen">
                                         <CardTitle className="text-2xl w-full max-w-screen">
                                             {rule.title}
