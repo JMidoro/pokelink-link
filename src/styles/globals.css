@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url("https://use.typekit.net/dyq7llu.css");
+ 
+@layer base {
+  * {
+    @apply border-border;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: black;
+  }
+}
+
+.teko {
+    font-family: 'Teko', sans-serif;
+}
+
+.card-drop-shadow {
+  filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.5)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.5));
+}
+
+.bg-primary {
+  background-color: rgba(240, 240, 240, 1);
+}
+
+.bg-black {
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+}

@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -28,19 +28,21 @@ model Post {
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
+    id                String        @id @default(cuid())
     userId            String
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String?       @db.Text
+    access_token      String?       @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String?       @db.Text
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    keys              Key[]
+    playthroughs      Playthrough[]
 
     @@unique([provider, providerAccountId])
 }
@@ -53,9 +55,99 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Key {
+    id        String  @id @default(cuid())
+    account   Account @relation(fields: [accountId], references: [id])
+    accountId String
+    value     String  @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Playthrough {
+    id         String   @id @default(cuid())
+    pokelinkId String   @unique
+    title      String   @default("Untitled")
+    subTitle   String   @default("Untitled")
+    gameId     String
+    gameTitle  String
+    generation Int
+    updatedAt  DateTime @updatedAt
+    account    Account  @relation(fields: [accountId], references: [id])
+    accountId  String
+
+    pokemon Pokemon[]
+}
+
+model Pokemon {
+    id              String      @id @default(cuid())
+    name            String
+    playthrough     Playthrough @relation(fields: [playthroughId], references: [id])
+    playthroughId   String
+    level           Int
+    pid             String      @unique
+    encounterType   Int?
+    isEgg           Boolean?
+    nature          String
+    move1Name       String?
+    move1PP         Int?
+    move2Name       String?
+    move2PP         Int?
+    move3Name       String?
+    move3PP         Int?
+    move4Name       String?
+    move4PP         Int?
+    poison          Boolean?
+    burn            Boolean?
+    freeze          Boolean?
+    paralysis       Boolean?
+    sleep           Boolean?
+    markings        Int?
+    nickname        String
+    alternateForm   String?
+    ability         String?
+    friendship      Int?
+    pokerus         Int?
+    otid            BigInt?
+    locationMet     Int?
+    exp             Int
+    maxHP           Int
+    currentHP       Int?
+    isGenderless    Boolean?
+    pokeball        Int?
+    species         Int
+    levelMet        Int
+    heldItem        Int?
+    isFemale        Boolean?
+    eggLocationMet  Int?
+    gift            Boolean?
+    isShiny         Boolean?
+    atkEV           Int
+    defEV           Int
+    spAtkEV         Int
+    spDefEV         Int
+    hpEV            Int
+    speedEV         Int
+    hiddenPower     String?
+    otsid           BigInt?
+    speciesName     String
+    atkIV           Int
+    defIV           Int
+    spAtkIV         Int
+    spDefIV         Int
+    hpIV            Int
+    speedIV         Int
+    alternateFormId Int?
+    slotId          Int?
+    type1           String
+    type2           String?
+    hasDied         Boolean     @default(false)
+}
+
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    name          String    @unique
     email         String?   @unique
     emailVerified DateTime?
     image         String?
@@ -70,4 +162,13 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Tokens {
+    id        String   @id @default(cuid())
+    platform  String
+    token     String
+    updatedAt DateTime @updatedAt
+    expiresIn Int
+    createdAt DateTime
 }
