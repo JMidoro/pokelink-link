@@ -77,7 +77,7 @@ export default async function Home({ params }: { params: { player: string } }) {
         <>
             <ScrollArea className="w-full h-screen reative md:pt-10" style={{ scrollBehavior: 'smooth' }}>
                 {!!session?.user ? <NavUser /> : <NavAnon />}
-                <div className="md:mb-8 container md:aspect-video" id="party">
+                <div className="md:mb-8 md:container md:aspect-video" id="party">
                     <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 grid-rows-9 ">
                         {tiles}
                     </div>
