@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     gameId: input[0].trainer.game.id,
     gameTitle: input[0].trainer.game.friendlyName,
     generation: input[0].trainer.game.generation,
-    accountId: key.account.id,
+    accountId: key.accountId,
   };
 
   const playthrough = await prisma.playthrough.upsert({
